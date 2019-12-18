@@ -107,45 +107,36 @@ public class OpMode extends LinearOpMode {
 
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
-            
-            double left_stick = gamepad1.left_stick_y / 1.5;
-            double right_stick = gamepad1.right_stick_y / 1.5;
-            double left_trigger = gamepad1.left_trigger / 1.5;
-            double right_trigger = gamepad1.right_trigger / 1.5;
-            
-            backLeft.setPower(-left_stick);
-            frontLeft.setPower(left_stick);
-            backRight.setPower(-right_stick);
-            frontRight.setPower(right_stick);
-            
-            boolean y = gamepad1.y;
-            boolean a = gamepad1.a;
-            if (y){
-                lift.setPower(0.25);
+
+            double backLeftPower = 0;
+            double backRightPower = 0;
+            double frontLeftPower = 0;
+            double frontRightPower = 0;
+
+            double y = gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x;
+
+            if (y > 0){
+                if (x > 0){
+                    frontLeftPower = y + x;
+                    backRightPower = y + x;
+                }
+                else{
+                    frontRightPower = y - x;
+                    backLeftPower = y - x;
+                }
             }
-            else if (a){
-                lift.setPower(-0.25);
-            }
-            else {
-                lift.setPower(0);
-            }
+
+            backLeft.setPower(backLeftPower);
+            backRight.setPower(backRightPower);
+            frontLeft.setPower(frontLeftPower);
+            frontRight.setPower(frontRightPower);
+
+
+
+
             
-            boolean up = gamepad1.dpad_up;
-            boolean down = gamepad1.dpad_down;
-            
-            if (up) {
-                wrist.setPosition(wrist.getPosition() + .01);
-            }
-            else if (down) {
-                wrist.setPosition(wrist.getPosition() - .01);
-            }
-            
-            boolean x = gamepad1.x;
-            boolean b = gamepad1.b;
-            
-            if (x) {
-                claw.setPosition(1.0);
-            }
+
             
             
             
