@@ -67,7 +67,7 @@ public class OpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized Version 0");
         telemetry.update();
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -85,8 +85,8 @@ public class OpMode extends LinearOpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
         lift.setDirection(DcMotor.Direction.FORWARD);
         
         wrist.setPosition(0.1);
@@ -108,27 +108,64 @@ public class OpMode extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
 
-            double backLeftPower = 0;
-            double backRightPower = 0;
-            double frontLeftPower = 0;
-            double frontRightPower = 0;
 
-            double y = gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
 
-            if (y > 0){
-                if (x > 0){
-                    frontLeftPower = y + x;
-                    backRightPower = y + x;
-                }
-                else{
-                    frontRightPower = y - x;
-                    backLeftPower = y - x;
-                }
+            double y = gamepad1.left_stick_y/2;
+            double x = gamepad1.left_stick_x/2;
+            double power = .5;
+
+            double backLeftPower = y;
+            double backRightPower = y;
+            double frontLeftPower = y;
+            double frontRightPower = y;
+
+            /*
+            if (x < 0) {
+                backLeftPower = -power;
+                backRightPower = power;
+                frontLeftPower = -power;
+                frontRightPower = power;
+            }
+            else if (y > 0) {
+                backLeftPower = power;
+                backRightPower = power;
+                frontLeftPower = -power;
+                frontRightPower = -power;
+            }
+            else if (x > 0) {
+                backLeftPower = power;
+                backRightPower = -power;
+                frontLeftPower = power;
+                frontRightPower = -power;
+            }
+            else if (y < 0) {
+                backLeftPower = -power;
+                backRightPower = -power;
+                frontLeftPower = power;
+                frontRightPower = power;
             }
 
-            backLeft.setPower(backLeftPower);
-            backRight.setPower(backRightPower);
+
+            if (y > 0 && x > 0 && y > x){
+                backLeftPower = x;
+                backRightPower = y;
+                frontLeftPower = y;
+                frontRightPower = x;
+            }
+            else if (y > 0 && x > 0 && x > y){
+                backLeftPower = x;
+                backRightPower = y;
+                frontLeftPower = y;
+                frontRightPower = x;
+            }
+            */
+
+
+
+
+
+            backLeft.setPower(backLeftPower*1.5);
+            backRight.setPower(backRightPower*1.5);
             frontLeft.setPower(frontLeftPower);
             frontRight.setPower(frontRightPower);
 
@@ -154,6 +191,8 @@ public class OpMode extends LinearOpMode {
           
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("X Pos", x);
+            telemetry.addData("Y Pos", y);
             //telemetry.addData("Arm Pos: " + arm.getPosition().toString());
 
             telemetry.update();
