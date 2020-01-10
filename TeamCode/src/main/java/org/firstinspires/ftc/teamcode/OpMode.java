@@ -110,14 +110,13 @@ public class OpMode extends LinearOpMode {
 
 
 
-            double y = gamepad1.left_stick_y/2;
-            double x = gamepad1.left_stick_x/2;
-            double power = .5;
+            double y = -gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x;
 
-            double backLeftPower = y;
-            double backRightPower = y;
-            double frontLeftPower = y;
-            double frontRightPower = y;
+            double bl = 0;
+            double br = 0;
+            double fl = 0;
+            double fr = 0;
 
             /*
             if (x < 0) {
@@ -145,29 +144,23 @@ public class OpMode extends LinearOpMode {
                 frontRightPower = power;
             }
 
-
-            if (y > 0 && x > 0 && y > x){
-                backLeftPower = x;
-                backRightPower = y;
-                frontLeftPower = y;
-                frontRightPower = x;
-            }
-            else if (y > 0 && x > 0 && x > y){
-                backLeftPower = x;
-                backRightPower = y;
-                frontLeftPower = y;
-                frontRightPower = x;
-            }
             */
+            if (y > 0 && x > 0 && y > x){
+                bl = 1 - x;
+                br = y;
+                fl = y;
+                fr = 1 - x;
+            }
 
 
 
 
 
-            backLeft.setPower(backLeftPower*1.5);
-            backRight.setPower(backRightPower*1.5);
-            frontLeft.setPower(frontLeftPower);
-            frontRight.setPower(frontRightPower);
+
+            backLeft.setPower(bl*1.5);
+            backRight.setPower(br*1.5);
+            frontLeft.setPower(fl);
+            frontRight.setPower(fr);
 
 
 
