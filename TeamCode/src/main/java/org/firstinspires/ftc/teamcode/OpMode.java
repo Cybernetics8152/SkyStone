@@ -67,7 +67,7 @@ public class OpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "Initialized Version 0");
+        telemetry.addData("Status", "Initialized Version 01");
         telemetry.update();
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -145,22 +145,15 @@ public class OpMode extends LinearOpMode {
             }
 
             */
-            if (y > 0 && x > 0 && y > x){
-                bl = 1 - x;
-                br = y;
-                fl = y;
-                fr = 1 - x;
-            }
 
 
 
 
 
-
-            backLeft.setPower(bl*1.5);
-            backRight.setPower(br*1.5);
-            frontLeft.setPower(fl);
-            frontRight.setPower(fr);
+            backLeft.setPower(gamepad1.left_stick_y);
+            backRight.setPower(gamepad2.left_stick_y);
+            frontLeft.setPower(gamepad1.left_stick_y);
+            frontRight.setPower(gamepad2.left_stick_y);
 
 
 
