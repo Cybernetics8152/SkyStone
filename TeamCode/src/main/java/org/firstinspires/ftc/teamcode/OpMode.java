@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -83,14 +84,25 @@ public class OpMode extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         lift.setDirection(DcMotor.Direction.FORWARD);
         
         wrist.setPosition(0.1);
         claw.setPosition (0.0);
+
+        double bl;
+        double br;
+        double fl;
+        double fr;
  
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -108,52 +120,28 @@ public class OpMode extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
 
+            bl = 0;
+            br = 0;
+            fl = 0;
+            fr = 0;
 
-
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
-
-            double bl = 0;
-            double br = 0;
-            double fl = 0;
-            double fr = 0;
-
-            /*
-            if (x < 0) {
-                backLeftPower = -power;
-                backRightPower = power;
-                frontLeftPower = -power;
-                frontRightPower = power;
+            if (gamepad1.left_trigger > 0 && gamepad1.right_trigger == 0) {
+                bl = gamepad1.left_trigger;
+                br = -gamepad1.left_trigger;
+                fl = -gamepad1.left_trigger;
+                fr = gamepad1.left_trigger;
             }
-            else if (y > 0) {
-                backLeftPower = power;
-                backRightPower = power;
-                frontLeftPower = -power;
-                frontRightPower = -power;
-            }
-            else if (x > 0) {
-                backLeftPower = power;
-                backRightPower = -power;
-                frontLeftPower = power;
-                frontRightPower = -power;
-            }
-            else if (y < 0) {
-                backLeftPower = -power;
-                backRightPower = -power;
-                frontLeftPower = power;
-                frontRightPower = power;
+            else if (gamepad1.right_trigger > 0 && gamepad1.left_trigger == 0){
+                bl = -gamepad1.right_trigger;
+                br = gamepad1.right_trigger;
+                fl = gamepad1.right_trigger;
+                fr = -gamepad1.right_trigger;
             }
 
-            */
-
-
-
-
-
-            backLeft.setPower(gamepad1.left_stick_y);
-            backRight.setPower(gamepad2.left_stick_y);
-            frontLeft.setPower(gamepad1.left_stick_y);
-            frontRight.setPower(gamepad2.left_stick_y);
+            backLeft.setPower(bl/1.5);
+            backRight.setPower(br/1.5);
+            frontLeft.setPower(fl);
+            frontRight.setPower(fr);
 
 
 
@@ -177,8 +165,6 @@ public class OpMode extends LinearOpMode {
           
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("X Pos", x);
-            telemetry.addData("Y Pos", y);
             //telemetry.addData("Arm Pos: " + arm.getPosition().toString());
 
             telemetry.update();
