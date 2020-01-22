@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="OpMode", group="Linear Opmode")
+@TeleOp(name="OnBot", group="Linear Opmode")
 
 public class OpMode extends LinearOpMode {
 
@@ -63,6 +63,7 @@ public class OpMode extends LinearOpMode {
     private DcMotor frontRight = null;
     private DcMotor lift = null;
     private DcMotor arm = null;
+    private DcMotor tape = null;
     private Servo wrist = null;
     private Servo claw = null;
     private Servo hook = null;
@@ -82,6 +83,7 @@ public class OpMode extends LinearOpMode {
         frontRight  = hardwareMap.get(DcMotor.class, "frontRight");
         lift = hardwareMap.get(DcMotor.class, "lift");
         arm = hardwareMap.get(DcMotor.class, "arm");
+        tape = hardwareMap.get(DcMotor.class, "tape");
         wrist = hardwareMap.get(Servo.class, "wrist");
         claw = hardwareMap.get (Servo.class, "claw");
         hook = hardwareMap.get (Servo.class, "hook");
@@ -99,9 +101,13 @@ public class OpMode extends LinearOpMode {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         lift.setDirection(DcMotor.Direction.FORWARD);
+        arm.setDirection(DcMotor.Direction.FORWARD);
+        tape.setDirection(DcMotor.Direction.FORWARD);
         
-        wrist.setPosition(0.1);
-        claw.setPosition (0.5);
+        // INIT SERVOS
+        wrist.setPosition(0.03);
+        claw.setPosition (1.0);
+        hook.setPosition(0.42);
 
         double bl;
         double br;
@@ -140,10 +146,46 @@ public class OpMode extends LinearOpMode {
             }
 
             // Set Power Levels to variables after modification
-            backLeft.setPower(bl);
-            backRight.setPower(br);
-            frontLeft.setPower(fl);
-            frontRight.setPower(fr);
+            double power = 0.5;
+            backLeft.setPower(bl * power);
+            backRight.setPower(br * power);
+            frontLeft.setPower(fl * power);
+            frontRight.setPower(fr * power);
+            
+            /*
+            //CALIBRATION CODE
+            if (gamepad1.dpad_up){
+                hook.setPosition(hook.getPosition() + 0.001);
+            }
+            else if (gamepad1.dpad_down){
+                hook.setPosition(hook.getPosition() - 0.001);
+            }
+            */
+            
+            // HOOK CONTROL
+            //DOWN
+            if (gamepad1.a){
+                hook.setPosition(0.06);
+            }
+            //UP
+            else if (gamepad1.b){
+                hook.setPosition(0.20);
+            }
+            
+            //TAPE MEASURE CONTROL
+            //OUT
+            if (gamepad1.dpad_up){
+                tape.setPower(0.6);
+            }
+            //IN
+            else if (gamepad1.dpad_down){
+                tape.setPower(-0.6);
+            }
+            else {
+                tape.setPower(0);
+            }
+            
+            
 
 
 
@@ -151,24 +193,11 @@ public class OpMode extends LinearOpMode {
             
 
             
-            
-            
-            
-                
-            
-            
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
-
-            // Send calculated power to wheels
+        
           
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Trigger", "Equals: " + gamepad1.left_trigger);
-            //telemetry.addData("Arm Pos: " + arm.getPosition().toString());
+            //telemetry.addData("Servo", "Position: " + hook.getPosition()); 
 
             telemetry.update();
         }
